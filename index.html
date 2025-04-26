@@ -4,32 +4,44 @@
   <meta charset="UTF-8">
   <title>Liberation Day Crossword</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header>
   <img id="logo" src="logo.png" alt="Logo">
-  <h1>Liberation Day Crossword</h1>
+  <h1>🌟 Liberation Day Crossword 🌟</h1>
   <div id="timer">10:00</div>
 </header>
 
-<section id="instructions">
-  <h2>Hướng dẫn</h2>
-  <p>Điền từ vào ô trống dựa theo các gợi ý bên phải. Các ô màu đen là ô không điền chữ.</p>
-</section>
+<div id="help-button" class="help-button">
+  ❓ How to Play
+  <div class="help-tooltip">
+    <h3>How to Play</h3>
+    <ul>
+      <li>Fill in the crossword by typing letters in the boxes</li>
+      <li>Each numbered box starts a new word</li>
+      <li>Read the clues on the right side</li>
+      <li>Green cells mean correct answers</li>
+      <li>Red cells mean incorrect answers</li>
+      <li>Click on a clue to focus on that word</li>
+      <li>Complete all words to win!</li>
+    </ul>
+  </div>
+</div>
 
 <main id="game-area">
   <div id="crossword"></div>
-
+  
   <div id="hints">
-    <h2>Gợi ý</h2>
+    <h2>📝 Clues</h2>
     <ul id="clues-list"></ul>
   </div>
 </main>
 
 <div class="controls">
-  <button id="submit">Nộp bài</button>
-  <button id="reset">Chơi lại</button>
+  <button id="submit">📸 Take Screenshot</button>
+  <button id="reset">🔄 Play Again</button>
 </div>
 
 <script src="matrix.js"></script>
