@@ -193,6 +193,22 @@ header h1 {
   justify-content: center;
 }
 
+.cell-number-only {
+  background: #f0f0f0;
+  position: relative;
+}
+
+.cell-number-only .cell-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  font-size: 20px;
+  color: #ff5722;
+  font-weight: bold;
+}
+
 #hints {
   background: white;
   padding: 20px;

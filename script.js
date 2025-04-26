@@ -1,7 +1,7 @@
 const crosswordContainer = document.getElementById('crossword');
 const cluesList = document.getElementById('clues-list');
 
-// Tạo bảng ô chữ
+// Tạo bảng ô chữ với số và chữ riêng biệt
 function createCrossword() {
   crosswordMatrix.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {
@@ -9,30 +9,32 @@ function createCrossword() {
       div.classList.add('cell');
       
       if (cell === " ") {
-        div.style.backgroundColor = "#333";
-      } else {
-        const input = document.createElement('input');
-        input.setAttribute('maxlength', 1);
-        input.dataset.row = rowIndex;
-        input.dataset.col = colIndex;
+        // Kiểm tra nếu ô này có chữ cái trong wordMatrix
+        const wordCell = wordMatrix[rowIndex][colIndex];
         
-        // Chỉ set answer cho các ô chữ cái, không cho ô số
-        if (isNaN(cell)) {
-          input.dataset.answer = cell.toUpperCase();
+        if (wordCell !== " ") {
+          // Tạo input cho ô chữ cái
+          const input = document.createElement('input');
+          input.setAttribute('maxlength', 1);
+          input.dataset.row = rowIndex;
+          input.dataset.col = colIndex;
+          input.dataset.answer = wordCell.toUpperCase();
+          
+          // Thêm sự kiện focus để highlight các ô liên quan
+          input.addEventListener('focus', () => highlightWord(rowIndex, colIndex));
+          
+          div.appendChild(input);
+        } else {
+          // Ô trống - tô màu nền
+          div.style.backgroundColor = "#333";
         }
-        
-        // Thêm sự kiện focus để highlight các ô liên quan
-        input.addEventListener('focus', () => highlightWord(rowIndex, colIndex));
-        
-        div.appendChild(input);
-        
-        // Hiển thị số gợi ý
-        if (!isNaN(cell)) {
-          const number = document.createElement('div');
-          number.classList.add('cell-number');
-          number.textContent = cell;
-          div.appendChild(number);
-        }
+      } else if (!isNaN(cell)) {
+        // Ô có số - chỉ hiển thị số, không tạo input
+        div.classList.add('cell-number-only');
+        const number = document.createElement('div');
+        number.classList.add('cell-number');
+        number.textContent = cell;
+        div.appendChild(number);
       }
       
       crosswordContainer.appendChild(div);
@@ -64,10 +66,33 @@ function displayHints() {
 
 // Focus vào từ dựa trên vị trí
 function focusOnWord(wordInfo) {
-  const { row, col } = wordInfo;
-  const cell = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
-  if (cell) {
-    cell.focus();
+  const { row, col, direction } = wordInfo;
+  
+  // Tìm ô input đầu tiên của từ (bỏ qua ô số)
+  let firstInputCell;
+  
+  if (direction === "across") {
+    // Tìm input đầu tiên từ trái sang phải
+    for (let c = col; c < col + wordInfo.length; c++) {
+      const cell = document.querySelector(`input[data-row="${row}"][data-col="${c}"]`);
+      if (cell) {
+        firstInputCell = cell;
+        break;
+      }
+    }
+  } else {
+    // Tìm input đầu tiên từ trên xuống dưới
+    for (let r = row; r < row + wordInfo.length; r++) {
+      const cell = document.querySelector(`input[data-row="${r}"][data-col="${col}"]`);
+      if (cell) {
+        firstInputCell = cell;
+        break;
+      }
+    }
+  }
+  
+  if (firstInputCell) {
+    firstInputCell.focus();
   }
 }
 
