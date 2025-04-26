@@ -277,43 +277,54 @@ document.addEventListener('DOMContentLoaded', () => {
   createCrossword();
   displayHints();
   
-  // Event listeners cho các nút
-  document.getElementById('submit').addEventListener('click', () => {
-    takeScreenshot();
-    
-    let correctCount = 0;
-    document.querySelectorAll('.cell input').forEach(input => {
-      if (input.parentElement.classList.contains('correct')) {
-        correctCount++;
-      }
-    });
-    
-    const totalCells = document.querySelectorAll('.cell input').length;
-    const percentage = (correctCount / totalCells * 100).toFixed(1);
-    
-    alert(`Bạn đã hoàn thành ${percentage}% ô chữ!`);
-  });
+  // Xóa tất cả event listeners cũ trước khi thêm mới
+  const submitBtn = document.getElementById('submit');
+  const resetBtn = document.getElementById('reset');
+  const showAllBtn = document.getElementById('show-all');
   
-  document.getElementById('reset').addEventListener('click', () => {
-    location.reload();
-  });
+  if (submitBtn) {
+    const newSubmitBtn = submitBtn.cloneNode(true);
+    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+    newSubmitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      takeScreenshot();
+    }, { once: true }); // Chỉ chạy một lần
+  }
   
-  document.getElementById('show-all').addEventListener('click', () => {
-    document.querySelectorAll('.cell input').forEach(input => {
-      const answer = input.dataset.answer;
-      if (answer) {
-        input.value = answer;
-        input.parentElement.classList.add('correct');
-        input.parentElement.classList.remove('incorrect');
-      }
+  if (resetBtn) {
+    const newResetBtn = resetBtn.cloneNode(true);
+    resetBtn.parentNode.replaceChild(newResetBtn, resetBtn);
+    newResetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      location.reload();
     });
-    
-    // Mark all clues as completed
-    document.querySelectorAll('#clues-list li').forEach(li => {
-      li.classList.add('completed');
+  }
+  
+  if (showAllBtn) {
+    const newShowAllBtn = showAllBtn.cloneNode(true);
+    showAllBtn.parentNode.replaceChild(newShowAllBtn, showAllBtn);
+    newShowAllBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      document.querySelectorAll('.cell input').forEach(input => {
+        const answer = input.dataset.answer;
+        if (answer) {
+          input.value = answer;
+          input.parentElement.classList.add('correct');
+          input.parentElement.classList.remove('incorrect');
+        }
+      });
+      
+      // Mark all clues as completed
+      document.querySelectorAll('#clues-list li').forEach(li => {
+        li.classList.add('completed');
+      });
+      
+      // Show victory message
+      showVictory();
     });
-    
-    // Show victory message
-    showVictory();
-  });
+  }
 });

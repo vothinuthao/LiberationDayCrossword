@@ -174,28 +174,17 @@ function showScreenshotPreview(canvas) {
     margin-top: 20px;
   `;
 
-  // Download buttons
-  const downloadPNG = createButton('📥 Download Image', () => {
+  // Download PNG button only
+  const downloadPNG = createButton('📥 Download PNG', () => {
     downloadScreenshot(canvas, 'png');
     document.body.removeChild(previewOverlay);
   });
-
-  // const downloadJPG = createButton('📥 Download JPG', () => {
-  //   downloadScreenshot(canvas, 'jpeg');
-  //   document.body.removeChild(previewOverlay);
-  // });
-
-  // const shareButton = createButton('📤 Share', () => {
-  //   shareScreenshot(canvas);
-  // });
 
   const closeButton = createButton('❌ Close', () => {
     document.body.removeChild(previewOverlay);
   });
 
   buttonContainer.appendChild(downloadPNG);
-  buttonContainer.appendChild(downloadJPG);
-  buttonContainer.appendChild(shareButton);
   buttonContainer.appendChild(closeButton);
 
   previewContainer.appendChild(img);
