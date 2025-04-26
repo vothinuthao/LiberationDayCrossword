@@ -1,0 +1,93 @@
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    margin: 0;
+    text-align: center;
+  }
+  
+  header {
+    background-color: #ff8a65;
+    color: white;
+    padding: 20px;
+    position: relative;
+  }
+  
+  #logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 60px;
+  }
+  
+  #timer {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 22px;
+  }
+  
+  #crossword {
+    margin: 30px auto;
+    display: grid;
+    grid-template-columns: repeat(15, 42px);
+    gap: 5px;
+    justify-content: center;
+  }
+  
+  .cell {
+    width: 42px;
+    height: 42px;
+    background: black;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    background: transparent;
+  }
+  
+  .cell.correct input {
+    background-color: #a5d6a7;
+  }
+  
+  .cell.incorrect input {
+    background-color: #ef9a9a;
+  }
+  
+  .cell-number {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 10px;
+    color: white;
+  }
+  
+  .controls {
+    margin-top: 20px;
+  }
+  
+  .controls button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    background-color: #ff7043;
+    color: white;
+    font-size: 18px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
+  .controls button:hover {
+    background-color: #ff5722;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
