@@ -2,29 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> Liberation Day Crossword </title>
+  <title>Liberation Day Crossword</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <img id="logo" src="img/logo.png" alt="Logo">
+  <img id="logo" src="logo.png" alt="Logo">
   <h1>Liberation Day Crossword</h1>
   <div id="timer">10:00</div>
 </header>
 
-<main>
+<section id="instructions">
+  <h2>Hướng dẫn</h2>
+  <p>Điền từ vào ô trống dựa theo các gợi ý bên phải. Các ô màu đen là ô không điền chữ.</p>
+</section>
+
+<main id="game-area">
   <div id="crossword"></div>
 
-  <div class="controls">
-    <button id="submit">Submit</button>
-    <button id="reset">Reset</button>
-  </div>
-
   <div id="hints">
+    <h2>Gợi ý</h2>
     <ul id="clues-list"></ul>
   </div>
 </main>
+
+<div class="controls">
+  <button id="submit">Nộp bài</button>
+  <button id="reset">Chơi lại</button>
+</div>
 
 <script src="matrix.js"></script>
 <script src="timer.js"></script>
