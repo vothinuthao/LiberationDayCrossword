@@ -18,7 +18,14 @@ header {
 header h1 {
   font-size: 2.5em;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  margin: 10px 0;
+  margin: 10px 0 5px 0;
+}
+
+header h2 {
+  font-size: 1.5em;
+  margin: 0;
+  font-weight: normal;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
 .help-button {
@@ -121,16 +128,18 @@ header h1 {
   gap: 50px;
   margin: 20px auto;
   flex-wrap: wrap;
+  min-height: 500px; /* Đảm bảo có chiều cao tối thiểu */
 }
 
 #crossword {
   display: grid;
-  grid-template-columns: repeat(15, 50px);
+  grid-template-columns: repeat(18, 50px);
   gap: 2px;
   background: #fff;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  min-width: 936px; /* 18 * 50px + gaps + padding */
 }
 
 .cell {
@@ -180,17 +189,14 @@ header h1 {
 .cell-number {
   position: absolute;
   top: 3px;
-  left: 5px;
-  font-size: 14px;
+  left: 3px;
+  font-size: 12px;
   font-weight: bold;
   color: #ff5722;
-  background: white;
-  width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: none;
+  width: auto;
+  height: auto;
+  z-index: 1;
 }
 
 .cell-number-only {
@@ -217,6 +223,10 @@ header h1 {
   text-align: left;
   width: 100%;
   max-width: 400px;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #hints h2 {
@@ -229,6 +239,29 @@ header h1 {
 #clues-list {
   list-style: none;
   padding: 0;
+  overflow-y: auto;
+  flex-grow: 1;
+  margin: 0;
+  padding-right: 10px;
+}
+
+/* Custom scrollbar */
+#clues-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#clues-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+#clues-list::-webkit-scrollbar-thumb {
+  background: #ff7043;
+  border-radius: 4px;
+}
+
+#clues-list::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
 }
 
 #clues-list li {
@@ -258,6 +291,33 @@ header h1 {
   border-left-color: #4caf50;
   text-decoration: line-through;
   opacity: 0.8;
+}
+
+.controls button {
+  padding: 15px 30px;
+  background: linear-gradient(45deg, #ff7043, #ff5722);
+  color: white;
+  font-size: 22px;
+  margin: 10px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Comfortaa', sans-serif;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.controls button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.controls button:active {
+  transform: translateY(0);
+}
+
+.controls button#show-all {
+  background: linear-gradient(45deg, #2196F3, #1976D2);
 }
 
 .controls {
@@ -326,6 +386,22 @@ header h1 {
   100% { transform: translate(-50%, -100px); opacity: 0; }
 }
 
+footer {
+  background: #333;
+  color: white;
+  padding: 20px;
+  margin-top: 40px;
+  text-align: center;
+  border-top: 4px solid #ff5722;
+}
+
+footer .copyright {
+  margin: 0;
+  font-size: 16px;
+  font-family: 'Comfortaa', sans-serif;
+  letter-spacing: 0.5px;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   #game-area {
@@ -334,15 +410,19 @@ header h1 {
   }
   
   #crossword {
-    grid-template-columns: repeat(15, 35px);
+    grid-template-columns: repeat(18, 30px);
   }
   
   .cell {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
   }
   
   .cell input {
-    font-size: 18px;
+    font-size: 16px;
+  }
+  
+  #hints {
+    max-height: 400px;
   }
 }

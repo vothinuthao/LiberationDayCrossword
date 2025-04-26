@@ -3,42 +3,74 @@ const cluesList = document.getElementById('clues-list');
 
 // Tạo bảng ô chữ với số và chữ riêng biệt
 function createCrossword() {
+  const crosswordContainer = document.getElementById('crossword');
+  
+  if (!crosswordContainer) {
+    console.error('Crossword container not found!');
+    return;
+  }
+  
+  // Debug log
+  console.log('Creating crossword with matrix:', crosswordMatrix);
+  
   crosswordMatrix.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {
       const div = document.createElement('div');
       div.classList.add('cell');
       
-      if (cell === " ") {
-        // Kiểm tra nếu ô này có chữ cái trong wordMatrix
-        const wordCell = wordMatrix[rowIndex][colIndex];
+      const wordCell = wordMatrix[rowIndex][colIndex];
+      
+      if (cell === " " && wordCell === " ") {
+        // Ô trống - tô màu nền
+        div.style.backgroundColor = "#333";
+      } else {
+        // Tạo input cho tất cả các ô trắng (bao gồm cả ô có số)
+        const input = document.createElement('input');
+        input.setAttribute('maxlength', 1);
+        input.dataset.row = rowIndex;
+        input.dataset.col = colIndex;
         
         if (wordCell !== " ") {
-          // Tạo input cho ô chữ cái
-          const input = document.createElement('input');
-          input.setAttribute('maxlength', 1);
-          input.dataset.row = rowIndex;
-          input.dataset.col = colIndex;
           input.dataset.answer = wordCell.toUpperCase();
-          
-          // Thêm sự kiện focus để highlight các ô liên quan
-          input.addEventListener('focus', () => highlightWord(rowIndex, colIndex));
-          
-          div.appendChild(input);
-        } else {
-          // Ô trống - tô màu nền
-          div.style.backgroundColor = "#333";
         }
-      } else if (!isNaN(cell)) {
-        // Ô có số - chỉ hiển thị số, không tạo input
-        div.classList.add('cell-number-only');
-        const number = document.createElement('div');
-        number.classList.add('cell-number');
-        number.textContent = cell;
-        div.appendChild(number);
+        
+        // Thêm sự kiện focus để highlight các ô liên quan
+        input.addEventListener('focus', () => highlightWord(rowIndex, colIndex));
+        
+        div.appendChild(input);
+        
+        // Thêm số vào góc trái nếu ô có số
+        if (!isNaN(cell) && cell !== " ") {
+          const number = document.createElement('div');
+          number.classList.add('cell-number');
+          number.textContent = cell;
+          div.appendChild(number);
+        }
       }
       
       crosswordContainer.appendChild(div);
     });
+  });
+  
+  // Thêm event listener cho việc kiểm tra đáp án
+  crosswordContainer.addEventListener('input', (e) => {
+    if (e.target.tagName === "INPUT") {
+      const input = e.target;
+      const answer = input.dataset.answer;
+      
+      if (answer && input.value.toUpperCase() === answer) {
+        input.parentElement.classList.add('correct');
+        input.parentElement.classList.remove('incorrect');
+        
+        // Kiểm tra hoàn thành từ
+        checkWordCompletion();
+      } else if (input.value) {
+        input.parentElement.classList.add('incorrect');
+        input.parentElement.classList.remove('correct');
+      } else {
+        input.parentElement.classList.remove('correct', 'incorrect');
+      }
+    }
   });
 }
 
@@ -64,35 +96,14 @@ function displayHints() {
   });
 }
 
-// Focus vào từ dựa trên vị trí
+// Focus vào từ dựa trên vị trí - bắt đầu ngay từ ô có số
 function focusOnWord(wordInfo) {
   const { row, col, direction } = wordInfo;
   
-  // Tìm ô input đầu tiên của từ (bỏ qua ô số)
-  let firstInputCell;
-  
-  if (direction === "across") {
-    // Tìm input đầu tiên từ trái sang phải
-    for (let c = col; c < col + wordInfo.length; c++) {
-      const cell = document.querySelector(`input[data-row="${row}"][data-col="${c}"]`);
-      if (cell) {
-        firstInputCell = cell;
-        break;
-      }
-    }
-  } else {
-    // Tìm input đầu tiên từ trên xuống dưới
-    for (let r = row; r < row + wordInfo.length; r++) {
-      const cell = document.querySelector(`input[data-row="${r}"][data-col="${col}"]`);
-      if (cell) {
-        firstInputCell = cell;
-        break;
-      }
-    }
-  }
-  
-  if (firstInputCell) {
-    firstInputCell.focus();
+  // Focus vào ô đầu tiên của từ (ô có số)
+  const cell = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+  if (cell) {
+    cell.focus();
   }
 }
 
@@ -245,11 +256,64 @@ document.getElementById('submit').addEventListener('click', () => {
   alert(`Bạn đã hoàn thành ${percentage}% ô chữ!`);
 });
 
-// Reset
-document.getElementById('reset').addEventListener('click', () => {
-  location.reload();
+// Kiểm tra DOM loaded trước khi chạy
+document.addEventListener('DOMContentLoaded', () => {
+  const crosswordContainer = document.getElementById('crossword');
+  const cluesList = document.getElementById('clues-list');
+  
+  // Debug log
+  console.log('DOM loaded, starting game initialization...');
+  
+  // Kiểm tra xem container có tồn tại không
+  if (!crosswordContainer || !cluesList) {
+    console.error('Required elements not found:', {
+      crosswordContainer: !!crosswordContainer,
+      cluesList: !!cluesList
+    });
+    return;
+  }
+  
+  // Khởi tạo
+  createCrossword();
+  displayHints();
+  
+  // Event listeners cho các nút
+  document.getElementById('submit').addEventListener('click', () => {
+    takeScreenshot();
+    
+    let correctCount = 0;
+    document.querySelectorAll('.cell input').forEach(input => {
+      if (input.parentElement.classList.contains('correct')) {
+        correctCount++;
+      }
+    });
+    
+    const totalCells = document.querySelectorAll('.cell input').length;
+    const percentage = (correctCount / totalCells * 100).toFixed(1);
+    
+    alert(`Bạn đã hoàn thành ${percentage}% ô chữ!`);
+  });
+  
+  document.getElementById('reset').addEventListener('click', () => {
+    location.reload();
+  });
+  
+  document.getElementById('show-all').addEventListener('click', () => {
+    document.querySelectorAll('.cell input').forEach(input => {
+      const answer = input.dataset.answer;
+      if (answer) {
+        input.value = answer;
+        input.parentElement.classList.add('correct');
+        input.parentElement.classList.remove('incorrect');
+      }
+    });
+    
+    // Mark all clues as completed
+    document.querySelectorAll('#clues-list li').forEach(li => {
+      li.classList.add('completed');
+    });
+    
+    // Show victory message
+    showVictory();
+  });
 });
-
-// Khởi tạo
-createCrossword();
-displayHints();
